@@ -22,7 +22,7 @@ https://github.com/SaadOjo/DIY_Li-Fi/blob/master/transmitter/transmitter.ino
 https://github.com/SaadOjo/DIY_Li-Fi/blob/master/receiver/receiver.ino
 */
 
-#define DEBUG 1
+// #define DEBUG 1
 
 #define TX        0     //PB0 (pin5)
 #define RX        1     //PB1 (pin6)
@@ -241,37 +241,36 @@ void play(){
 void setup() {
   // Set up photoresistor & LED
   pinMode(PIN_SENSE, INPUT);
-  // pinMode(PIN_LED, OUTPUT);
-
   #ifdef DEBUG
   Serial.begin(9600);
   Serial.println("Initializing...");
   analogWrite(PIN_LED, 0);
   delay(500);
-  // #else
+  #else
   // Boot LED
-  for (int i = 0; i <= 255; i++) {
-    analogWrite(PIN_LED, i);
-    delay(5);
-  }
-  for (int i = 255; i >= 0; i--) {
-    analogWrite(PIN_LED, i);
-    delay(5);
+  for (int i = 0; i < 3; i++) {
+    for (int i = 0; i <= 255; i++) {
+      analogWrite(PIN_LED, i);
+      delay(1);
+    }
+    for (int i = 255; i >= 0; i--) {
+      analogWrite(PIN_LED, i);
+      delay(1);
+    }
+    delay(100);
   }
   #endif
+  pinMode(PIN_LED, OUTPUT);
 }
 
 void loop() {
   int freq;
   int sensorValue = analogRead(PIN_SENSE);
   unsigned int clampValue = constrain(map(sensorValue, 40, 500, 0, 1000), 0, 1000);
-  unsigned char ledValue = map(clampValue, 0, DIST_FAR, 255, 5); // scale to led & set minimum
+  // unsigned char ledValue = map(clampValue, 0, DIST_FAR, 255, 5); // scale to led & set minimum
 
   // Sensitivity control
   if (clampValue < DIST_FAR ) {
-    // Blink LED according to brightness
-    analogWrite(PIN_LED, ledValue);
-
     loopCount++;
     #ifdef DEBUG
     Serial.print(loopCount);
@@ -321,14 +320,20 @@ void loop() {
       play();
     }
     #endif
+    // Blink LED
+    // analogWrite(PIN_LED, ledValue);
+    digitalWrite(PIN_LED, HIGH);
 
     // Play short tone
     tone(PIN_SPKR, freq);
     delay(8);
     noTone(PIN_SPKR);
+    // analogWrite(PIN_LED, 0);
+    digitalWrite(PIN_LED, LOW);
+
+    // Extra delay.
     if (min >= 3 ) {
       delay(min+d);
     }
-    analogWrite(PIN_LED, 0);
   }
 }
