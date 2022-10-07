@@ -22,8 +22,6 @@ https://github.com/SaadOjo/DIY_Li-Fi/blob/master/transmitter/transmitter.ino
 https://github.com/SaadOjo/DIY_Li-Fi/blob/master/receiver/receiver.ino
 */
 
-// #define DEBUG 1
-
 #define TX        0     //PB0 (pin5)
 #define RX        1     //PB1 (pin6)
 #define PIN_SPKR  4     //PB4 (pin3)
@@ -31,10 +29,12 @@ https://github.com/SaadOjo/DIY_Li-Fi/blob/master/receiver/receiver.ino
 // #define PIN_LED   2     //PB2 (pin7)
 #define PIN_LED   1     //PB1 (pin6) // TODO: Update PCB to use this pin
 
-
-
 #define DIST_FAR    400
 #define DIST_CLOSE  300
+
+// #define DEBUG 1
+#define ANALOG_LED 1
+#define USE_TONE 1
 
 // Synth **********************************************
 const int Volume = 8; // Volume: 7 = loud, 8 = medium, 9 = quiet
@@ -241,11 +241,17 @@ void play(){
 void setup() {
   // Set up photoresistor & LED
   pinMode(PIN_SENSE, INPUT);
+  // pinMode(PIN_LED, OUTPUT);
+  #ifndef USE_TONE
+  pinMode(PIN_SPKR, OUTPUT);
+  #endif
+  #ifndef ANALOG_LED
+  pinMode(PIN_LED, OUTPUT);
+  #endif
   #ifdef DEBUG
   Serial.begin(9600);
   Serial.println("Initializing...");
   analogWrite(PIN_LED, 0);
-  delay(500);
   #else
   // Boot LED
   for (int i = 0; i < 3; i++) {
@@ -260,17 +266,26 @@ void setup() {
     delay(100);
   }
   #endif
-  pinMode(PIN_LED, OUTPUT);
 }
 
 void loop() {
+  #ifdef USE_TONE
   int freq;
+  #endif
   int sensorValue = analogRead(PIN_SENSE);
   unsigned int clampValue = constrain(map(sensorValue, 40, 500, 0, 1000), 0, 1000);
-  // unsigned char ledValue = map(clampValue, 0, DIST_FAR, 255, 5); // scale to led & set minimum
+  #ifdef ANALOG_LED
+  unsigned char ledValue = map(clampValue, 0, DIST_FAR, 255, 5); // scale to led & set minimum
+  #endif
 
   // Sensitivity control
   if (clampValue < DIST_FAR ) {
+    #ifdef ANALOG_LED
+    analogWrite(PIN_LED, ledValue);
+      #ifndef DEBUG
+      delay(5); // extra delay or not enough time for low PWM values to be visible
+      #endif
+    #endif
     loopCount++;
     #ifdef DEBUG
     Serial.print(loopCount);
@@ -293,43 +308,60 @@ void loop() {
     Serial.print(min+d);
     Serial.print("\tr1: ");
     Serial.print(r1);
-    Serial.print("\t\tled: ");
-    Serial.println(ledValue);
+      #ifdef ANALOG_LED
+      Serial.print("\t\tled: ");
+      Serial.println(ledValue);
+      #endif
+    Serial.println();
     #endif
 
+    #ifdef USE_TONE
     // TODO: Make this use variables/array
     if (loopCount < 500) {
       freq = random (100,120);     // clicky
     }
+      #ifndef DEBUG
+      else
+      if ( loopCount < 600 ) {
+        freq = random (400,450);     // beepy
+      } else
+      if ( loopCount < 700 ) {
+        freq = random (10000,10500); // chirpy
+      } else
+      if ( loopCount >= 700 && loopCount < 1000 ) {
+        freq = random (200,6000);    // funky
+      } else
+      #endif
+    #endif
     #ifndef DEBUG
-    else
-    if ( loopCount < 600 ) {
-      freq = random (400,450);     // beepy
-    } else
-    if ( loopCount < 700 ) {
-      freq = random (10000,10500); // chirpy
-    } else
-    if ( loopCount >= 700 && loopCount < 1000 ) {
-      freq = random (200,6000);    // funky
-    } else
     if ( loopCount > 1000 ) {
-      play();
-    }
     #else
     if ( loopCount > 100 ) {
-      play();
-    }
     #endif
+        play();
+    }
+
     // Blink LED
-    // analogWrite(PIN_LED, ledValue);
+    #ifndef ANALOG_LED
     digitalWrite(PIN_LED, HIGH);
+    #endif
 
     // Play short tone
+    #ifdef USE_TONE
     tone(PIN_SPKR, freq);
     delay(8);
     noTone(PIN_SPKR);
-    // analogWrite(PIN_LED, 0);
+    #else
+    digitalWrite(PIN_SPKR, HIGH);
+    delay(5);
+    digitalWrite(PIN_SPKR, LOW);
+    #endif
+
+    #ifdef ANALOG_LED
+    analogWrite(PIN_LED, 0);
+    #else
     digitalWrite(PIN_LED, LOW);
+    #endif
 
     // Extra delay.
     if (min >= 3 ) {
