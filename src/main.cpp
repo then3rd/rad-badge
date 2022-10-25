@@ -1,9 +1,18 @@
 #include <Arduino.h>
 #include <avr/wdt.h>
-#include "midi/portal_short.h"
+#include "midi/portal.h"
+// #include "midi/portal_short.h"
 // #include "midi/marblemachine.h"
+// #include "midi/rickroll.h"
+// #include "midi/bach.h"
 
 /*
+// Flashing //
+To set the correct fuses required for this project, Use Platformio's "Set Fuses" feature to enforce
+the values set within platformio.ini
+// ctrl+alt+t -> Set Fuses
+// pio run --target fuses --environment attiny85
+
 // Setup & Notes //
 xxd -i yoursong.midi > midi/yoursong.h
 Check out https://musicboxmaniacs.com/ for compatible midis
@@ -26,19 +35,22 @@ https://github.com/SaadOjo/DIY_Li-Fi/blob/master/receiver/receiver.ino
 #define RX        1     //PB1 (pin6)
 #define PIN_SPKR  4     //PB4 (pin3)
 #define PIN_SENSE A3    //PB3 (pin2)
-// #define PIN_LED   2     //PB2 (pin7)
-#define PIN_LED   1     //PB1 (pin6) // TODO: Update PCB to use this pin
+#define PIN_LED   1     //PB1 (pin6) led pwm
+// #define PIN_LED   2     //PB2 (pin7) digital non-pwm
 
-#define DIST_FAR    400
-#define DIST_CLOSE  300
-
+// Options
 // #define DEBUG 1
 #define ANALOG_LED 1
 #define USE_TONE 1
+#define DIST_FAR    300
+#define DIST_CLOSE  150
+#define LOOP_MAX 1000
+// #define LOOP_MAX 5000
+
 
 // Synth **********************************************
 const int Volume = 8; // Volume: 7 = loud, 8 = medium, 9 = quiet
-const int Decay = 14; // Length of note decay: 14 = maximum, 13 = medium, 12 = staccato
+const int Decay =  14; // Length of note decay: 14 = maximum, 13 = medium, 12 = staccato
 
 unsigned int Scale[] = {10973, 11626, 12317, 13050, 13826, 14648, 15519, 16442, 17419, 18455, 19552, 20715};
 
@@ -241,7 +253,6 @@ void play(){
 void setup() {
   // Set up photoresistor & LED
   pinMode(PIN_SENSE, INPUT);
-  // pinMode(PIN_LED, OUTPUT);
   #ifndef USE_TONE
   pinMode(PIN_SPKR, OUTPUT);
   #endif
@@ -255,6 +266,7 @@ void setup() {
   #else
   // Boot LED
   for (int i = 0; i < 3; i++) {
+    #ifdef ANALOG_LED
     for (int i = 0; i <= 255; i++) {
       analogWrite(PIN_LED, i);
       delay(1);
@@ -263,6 +275,11 @@ void setup() {
       analogWrite(PIN_LED, i);
       delay(1);
     }
+    #else
+    digitalWrite(PIN_LED, HIGH);
+    delay(500);
+    digitalWrite(PIN_LED, LOW);
+    #endif
     delay(100);
   }
   #endif
@@ -293,7 +310,7 @@ void loop() {
 
     int d;
     int r1;
-    int min = random (1, 10);
+    int min = random (5, 20);
     if (clampValue < DIST_CLOSE ) {
       r1 = random(0,200);
     } else { // far
@@ -317,24 +334,24 @@ void loop() {
 
     #ifdef USE_TONE
     // TODO: Make this use variables/array
-    if (loopCount < 500) {
+    if (loopCount < LOOP_MAX - 500 ) {
       freq = random (100,120);     // clicky
     }
       #ifndef DEBUG
       else
-      if ( loopCount < 600 ) {
+      if ( loopCount < LOOP_MAX - 400 ) {
         freq = random (400,450);     // beepy
       } else
-      if ( loopCount < 700 ) {
+      if ( loopCount < LOOP_MAX - 300 ) {
         freq = random (10000,10500); // chirpy
       } else
-      if ( loopCount >= 700 && loopCount < 1000 ) {
+      if ( loopCount < LOOP_MAX - 200 ) {
         freq = random (200,6000);    // funky
       } else
       #endif
     #endif
     #ifndef DEBUG
-    if ( loopCount > 1000 ) {
+    if ( loopCount > LOOP_MAX ) {
     #else
     if ( loopCount > 100 ) {
     #endif
@@ -364,7 +381,7 @@ void loop() {
     #endif
 
     // Extra delay.
-    if (min >= 3 ) {
+    if (min >= 10 ) {
       delay(min+d);
     }
   }
