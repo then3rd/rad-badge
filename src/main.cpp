@@ -23,9 +23,9 @@ https://github.com/SaadOjo/DIY_Li-Fi/blob/master/receiver/receiver.ino
 */
 
 unsigned int geigerCount = 0;
+unsigned int cycleCount = 0;
 
 void play(){
-  geigerCount = 0;
   setupIO();
   playMidiData();
   for(;;); // TODO; return to loop
@@ -175,7 +175,12 @@ void loop() {
 
     #ifndef DEBUG
     if ( geigerCount > LOOP_MAX ) {
-      play();
+      if (cycleCount > CYCLES) {
+        play();
+      } else {
+        cycleCount++;
+      }
+      geigerCount = 0;
     }
     #else
     if ( geigerCount > 100 ) {
