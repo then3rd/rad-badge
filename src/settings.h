@@ -1,5 +1,6 @@
 #ifndef __settings_h
-#define __settings_h
+    #define __settings_h
+#endif
 #define TX        0     //PB0 (pin5)
 #define RX        1     //PB1 (pin6)
 #define PIN_SPKR  4     //PB4 (pin3)
@@ -13,8 +14,10 @@
 #define USE_TONE 1
 #define DIST_FAR    400 // lower == darker
 #define DIST_CLOSE  200
-#define LOOP_MAX 1000
-#define CYCLES 5
-// #define LOOP_MAX 50000
-// #define LOOP_MAX 5000
+#ifndef DEBUG
+    #define CYCLES 5
+    #define LOOP_MAX 2000
+#else
+    #define CYCLES 1
+    #define LOOP_MAX 1000
 #endif

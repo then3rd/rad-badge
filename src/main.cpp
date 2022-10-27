@@ -172,8 +172,6 @@ void loop() {
     #endif
     #endif
 
-
-    #ifndef DEBUG
     if ( geigerCount > LOOP_MAX ) {
       if (cycleCount > CYCLES) {
         play();
@@ -182,11 +180,6 @@ void loop() {
       }
       geigerCount = 0;
     }
-    #else
-    if ( geigerCount > 100 ) {
-      play();
-    }
-    #endif
 
     // Do the click & blink
     geigerTick();
