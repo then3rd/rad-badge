@@ -11,8 +11,8 @@
 // #define DEBUG 1
 #define ANALOG_LED 1
 #define USE_TONE 1
-#define DIST_FAR    1200 // lower == darker
-#define DIST_CLOSE  600
-#define LOOP_MAX 1000
+#define DIST_FAR    500 // lower == darker
+#define DIST_CLOSE  300
+#define LOOP_MAX 50000
 // #define LOOP_MAX 5000
 #endif

@@ -1,11 +1,14 @@
 #include <Arduino.h>
 #include <avr/wdt.h>
 #include "settings.h"
+#ifndef DEBUG
 #include "midi/portal.h"
-// #include "midi/portal_short.h"
+#else
+#include "midi/portal_short.h"
 // #include "midi/marblemachine.h"
 // #include "midi/rickroll.h"
 // #include "midi/bach.h"
+#endif
 
 /*
 xxd -i yoursong.midi > midi/yoursong.h
