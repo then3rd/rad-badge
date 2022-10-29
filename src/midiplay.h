@@ -11,10 +11,8 @@
 #endif
 
 /*
-xxd -i yoursong.midi > midi/yoursong.h
-Check out https://musicboxmaniacs.com/ for compatible midis
-Source from http://www.technoblogy.com/show?2E6L
-*/
+    Code sourced from: http://www.technoblogy.com/show?2E6L
+ */
 
 // Synth **********************************************
 const int Volume = 8; // Volume: 7 = loud, 8 = medium, 9 = quiet
