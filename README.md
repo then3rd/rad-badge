@@ -42,7 +42,7 @@ To convert your song use the linux xxd utility:
 
 Next, modify the include line in `midiplay.h` to include your song
 
-`#include "midi/portal.h"`
+`#include "midi/yoursong.h"`
 
 Re-flash your chip and enjoy.
 
