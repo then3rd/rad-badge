@@ -22,25 +22,25 @@ To allow the Attiny85 to run at 16MHz instead of the factory 8MHz we need to set
 
 The current platformio.ini is confiugred for the USBasp programmer but you can configure your own too.
 1. Open this project with VSCode, Click the PlatformIO (alien) button.
-2. Expand "attiny85-usbasp" -> "Platform" and click "Set Fuses".
+2. Expand `attiny85-usbasp` -> `Platform` and click `Set Fuses`.
 
 If your programmer is correctly connected, the fuses will have been set and you'll see no errors in the conosle.
 
 Alternatively `pio run --target fuses --environment attiny85-usbasp` may work
 
 Next we can build and write the code:
-1. Click "attiny85-usbasp"  -> "General" and click "Build". If there are no errors in the code, it will build.
-2. Click "Upload". If the attiny is corrrectly connected the firmware will be written and validated.
+1. Click `attiny85-usbasp`  -> `General` then click `Build`. If there are no errors in the code, it will build.
+2. Click `upload`. If the attiny is corrrectly connected the firmware will be written and validated.
 
 ## MIDI setup
 Midi songs can be converted to bytecode and flashed to the device.
 * Check out https://musicboxmaniacs.com/ for compatible midis
-`
+
 To convert your song use the linux xxd utility:
 
 `xxd -i yoursong.midi > midi/yoursong.h`
 
-Next, modify the include line in `midiplay.h` to include your song
+Next, modify the include line in `midiplay.h` to include your song:
 
 `#include "midi/yoursong.h"`
 
