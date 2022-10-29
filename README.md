@@ -22,7 +22,7 @@ Debugging over serial and other configurable values can enabled and adjusted in 
 ## Fuses & Firmware
 To allow the Attiny85 to run at 16MHz instead of the factory 8MHz we need to set some custom "fuses" on the chip. This is only neccesary one time as the fuses are set until modified, regardless of new firmware.
 
-The current platformio.ini is confiugred for the USBasp programmer but you can configure your own too.
+The current `platformio.ini` is confiugred for the USBasp programmer but you can configure your own too.
 1. Open this project with VSCode, Click the PlatformIO (alien) button.
 2. Expand `attiny85-usbasp` -> `Platform` and click `Set Fuses`.
 
