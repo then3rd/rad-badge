@@ -40,11 +40,11 @@ To convert your song use the linux xxd utility:
 
 `xxd -i yoursong.midi > midi/yoursong.h`
 
-Then modify the include line in `midiplay.h` to include your song
+Next, modify the include line in `midiplay.h` to include your song
 
 `#include "midi/portal.h"`
 
-*/
+Re-flash your chip and enjoy.
 
 ## Useful Resources & References
 
