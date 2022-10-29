@@ -1,6 +1,8 @@
 # Radiation Minibadge 2022
+Fake light-reactive Geiger Counter & Midi player
 
 ### Version 1.0
+PCB, code, and readme were all cobbled together at the last minute. This project was a product prototypes simulation experiment for learning and fun.
 
 <img src="images/assembly.jpeg" width=250>
 
